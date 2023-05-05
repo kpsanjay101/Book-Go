@@ -3,13 +3,17 @@ package com.masai.BookingEntity;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
 public class Driver extends User{
+    @Column(unique = true)
 	private int driverId;
 	private String licenceNo;
 	private float rating;
@@ -25,6 +29,9 @@ public class Driver extends User{
 	}
 
 
+	
+
+
 	public Driver(String userName, String password, String address, String mobileNo, String email, int driverId,
 			String licenceNo, float rating, Cab cab, Set<TripBooking> tripBooking) {
 		super(userName, password, address, mobileNo, email);
@@ -34,6 +41,9 @@ public class Driver extends User{
 		this.cab = cab;
 		this.tripBooking = tripBooking;
 	}
+
+
+
 
 
 	public int getDriverId() {

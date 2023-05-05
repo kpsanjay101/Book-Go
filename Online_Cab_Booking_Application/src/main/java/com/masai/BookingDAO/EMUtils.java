@@ -11,7 +11,7 @@ public class EMUtils {
 		emf = Persistence.createEntityManagerFactory("projectConnect");
 	}
 	
-	static EntityManager getEntityManager() {
+	public static EntityManager getEntityManager() {
 		return emf.createEntityManager();
 	}
 	
