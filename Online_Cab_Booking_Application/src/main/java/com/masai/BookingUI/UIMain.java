@@ -1,11 +1,13 @@
 package com.masai.BookingUI;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.masai.AllServices.All_Service_Class;
 import com.masai.BookingDAO.CabBookingDao;
 import com.masai.BookingDAO.CabBookingDaoImpl;
 import com.masai.BookingService.BookingServise;
+import com.masai.Exception.InterIntegerValueException;
 
 import jakarta.persistence.PersistenceException;
 
@@ -19,46 +21,23 @@ public class UIMain {
 		cabBookinDao.addCabAndDetails();
 	}
 		
-	static void logingToAdmin(Scanner sc) {
+	public static void logingToAdmin(Scanner sc) {
 		System.out.print("Enter User Name ");
 		String user_name = sc.next();
 		System.out.print("Enter password ");
 		String password = sc.next();
 		try {
 			String str = BookingServise.loginAdminPage(user_name, password);
+			System.out.println();
 			System.out.println(str);
+			System.out.println();
 			All_Service_Class. showTheServices(sc);
 		}catch(Exception ex) {
+			System.out.println();
 			System.out.println(ex.getMessage());
+			System.out.println();
 		}
 	}
-	
-	static void addAdminAccount(Scanner sc) {
-		System.out.print("Enter username ");
-		String user_name = sc.next();
-		System.out.print("Enter Password ");
-		String password = sc.next();
-		System.out.print("Enter address ");
-		String address = sc.next();
-		System.out.print("Enter email ");
-		String email = sc.next();
-		System.out.print("Enter Mobile Number ");
-		String mobileNumber = sc.next();
-		System.out.print("Enter customer Id ");
-		int adminId = sc.nextInt();
-		CabBookingDao cabDao = new CabBookingDaoImpl();
-		try {
-			cabDao.addAdmin(user_name, password, address, mobileNumber, email,adminId);
-			System.out.println("Admin added Successfully");
-			
-		}catch(Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-		
-	}
-	
-	
-	
 	
 	static void viewListOfCabFromCustomerSide() {
 		BookingServise.viewListOfCabCustomerSide();
@@ -123,7 +102,7 @@ public class UIMain {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args)  throws InterIntegerValueException{
 //		addCabAndDetails();
 		
 		Scanner sc = new Scanner(System.in);
@@ -134,25 +113,43 @@ public class UIMain {
 			System.out.println("2.Customer Side");
 			System.out.println("0.Exit");
 			System.out.print("Enter Selection ");
-			choice = sc.nextInt();
+			
+			while(true) {
+				try {
+					choice = sc.nextInt();
+					System.out.println();
+					break;
+				}catch(InputMismatchException ex) {
+					System.out.print("Invalid Input. Please Inter Integer Value :- ");
+					sc.nextLine();
+				}
+			}
 			
 			switch(choice) {
 			case 1:
 				int adminChoice = 0;
 				do {
 					System.out.println("1.Login to existing account");
-					System.out.println("2.Make new Account");
 					System.out.println("0.Exit !");
 					System.out.print("Enter Your Choice ");
-					adminChoice = sc.nextInt();
+					
+					
+					while(true) {
+						try {
+							adminChoice = sc.nextInt();
+							System.out.println();
+							break;
+						}catch(InputMismatchException ex) {
+							System.out.print("Invalid Input. Please Inter Integer Value :- ");
+							sc.nextLine();
+						}
+					}
 					
 					switch(adminChoice) {
 					case 1:
 						logingToAdmin(sc);
 						break;
-					case 2:
-						addAdminAccount(sc);
-						break;
+					
 					case 0:
 						System.out.println("Please Explore Other Functionality");
 						break;
@@ -169,7 +166,18 @@ public class UIMain {
 					System.out.println("2.Make new Account");
 					System.out.println("0.Exit !");
 					System.out.print("Enter Your Choice ");
-					customerChoice = sc.nextInt();
+					
+					while(true) {
+						try {
+							customerChoice = sc.nextInt();
+							System.out.println();
+							break;
+						}catch(InputMismatchException ex) {
+							System.out.print("Invalid Input. Please Inter Integer Value :- ");
+							sc.nextLine();
+						}
+					}
+					
 					switch(customerChoice) {
 					case 1:
 						loginToCustomer(sc);

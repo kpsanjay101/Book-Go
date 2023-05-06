@@ -7,9 +7,9 @@ import com.masai.BookingEntity.TripBooking;
 
 public interface AdminService {
 	
-	public Admin insertAdmin(Admin admin);
-	public void updateAdmin(int adminId);
-	public void deleteAdmin(Admin admin);
+	public void insertAdmin(Admin admin);
+	public void updateAdmin(String password, String address,String email, String mobileNo, int adminId);
+	public void deleteAdmin(int adminId);
 	public List<TripBooking> getAllTrips(int adminId);
 	public List<TripBooking> getTripsCabwise();
 	public List<TripBooking> getTripsCustomerwise();

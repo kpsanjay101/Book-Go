@@ -1,6 +1,7 @@
 package com.masai.BookingService;
 
 import java.util.List;
+import java.util.Scanner;
 
 import com.masai.BookingDAO.CabBookingDao;
 import com.masai.BookingDAO.CabBookingDaoImpl;
@@ -8,12 +9,14 @@ import com.masai.BookingDAO.EMUtils;
 import com.masai.BookingEntity.Admin;
 import com.masai.BookingEntity.Cab;
 import com.masai.BookingEntity.Customer;
+import com.masai.BookingUI.UIMain;
 import com.masai.Exception.UserNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 
 public class BookingServise {
+	static Scanner sc = new Scanner(System.in);
 	
 	public static String loginAdminPage(String user_name, String password) {
 		
@@ -25,9 +28,12 @@ public class BookingServise {
 			String passwordA = admin.getPassword();
 			if(user_name.equals(userName) && password.equals(passwordA)) {
 				return "Login Successfull";
+			}else {
+				System.out.println("Please Inter Correct password");
+				UIMain.logingToAdmin(sc);
 			}
 		}catch(PersistenceException ex) {
-			throw new UserNotFoundException("User doesn't Exist. Please Sign in first");
+			throw new UserNotFoundException("User doesn't Exist. Please SignIn First Or Enter Correct UserName");
 		}
 		return "Please Enter Correct Password";
 	}

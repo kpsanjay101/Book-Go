@@ -13,7 +13,7 @@ public class Cab {
 	private float rating;
 	private float perKmRate;
 	@OneToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "driver_id")
 	 private Driver driver;
 	
 	public Cab() {

@@ -26,29 +26,47 @@ public class CabBookingDaoImpl implements CabBookingDao{
         EntityManager em = EMUtils.getEntityManager();
 		
 		Admin admin = new Admin("rohit123", "Rohit@123", "Patna", "4578458788", "rohit@gmail.com", 1);
+//		"aman123", "Aman@123", "Hajipur", "9845124578", "aman@gmail.com", 1
+		Customer customer = new Customer();
+		customer.setUserName("aman123");
+		customer.setPassword("Aman@123");
+		customer.setAddress("Hajipur");
+		customer.setEmail("aman@gmail.com");
+		customer.setMobileNo("9845124578");
+		customer.setCustomerId(1);
 		
-		Customer customer = new Customer("aman123", "Aman@123", "Hajipur", "1245124578", "aman@gmail.com", 1);
+		Set<Customer> cusSet = new HashSet<>();
+		cusSet.add(customer);
 		
 		Cab cab = new Cab(1, "SUV", 3.5f, 20.25f, null);
-		Set<TripBooking> set = new HashSet<>();
-
-		Driver driver = new Driver("naman123", "Naman@123", "Patna", "7894563245", "naman@gmail.com",1, "naman12L12", 3.5f, cab, set);
+		
+		Driver driver = new Driver("naman123", "Naman@123", "Patna", "7894563245", "naman@gmail.com",1, "naman12L12", 3.5f, cab, null);
 		cab.setDriver(driver);
 		
-		TripBooking tripB1 = new TripBooking(1001, 1, null, "Pune", "Mumbai", "2023-05-04-8-42-12", "2023-05-08-9-25-42", true, 500, 0.0f);
-		TripBooking tripB2 = new TripBooking(1002, 2, null, "Patna", "Gaya", "2022-05-04-8-42-12", "2022-05-08-9-25-42", true, 150, 0.0f);
+		Set<TripBooking> tripSet = new HashSet<>();
 		
+//		1001, 1, null, "Pune", "Mumbai", "2023-05-04-8-42-12", "2023-05-08-9-25-42", true, 500, 0.0f
+		
+		TripBooking tripB1 = new TripBooking();
+		
+		tripB1.setTripBookingId(1001);
+		tripB1.setFromDateTime("2023-05-04-8-42-12");
+		tripB1.setToDateTime("2023-05-08-9-25-42");
+		tripB1.setFromLocation("Pune");
+		tripB1.setToLocation( "Mumbai");
+		tripB1.setStattus(true);
+		tripB1.setDistanceInKM(300);
+		tripB1.setBill(2000);
 		tripB1.setDriver(driver);
-	    tripB2.setDriver(driver);
-	    
-		tripB1.setBill(tripB1.getDriver().getCab().getPerKmRate()*500);
-		tripB2.setBill(tripB2.getDriver().getCab().getPerKmRate()*150);
-		set.add(tripB1);
-		set.add(tripB2);
-
+		tripB1.setCustomer(cusSet);
 		
 		
-	    
+//		TripBooking tripB2 = new TripBooking(1002, 2, null, "Patna", "Gaya", "2022-05-04-8-42-12", "2022-05-08-9-25-42", true, 150, 0.0f);
+		
+		tripSet.add(tripB1);
+		customer.setTripBooking(tripSet);
+		driver.setTripBooking(tripSet);
+		
 	    EntityTransaction et = em.getTransaction();
 	    
 	    et.begin();
@@ -124,11 +142,11 @@ public class CabBookingDaoImpl implements CabBookingDao{
 	public void addCustomer(String userName, String password, String address, String mobilNo, String email,int customerId) {
 		
 		EntityManager em = EMUtils.getEntityManager();
-		Customer cust = new Customer(userName, password, address, mobilNo, email,customerId);
+//		Customer cust = new Customer(userName, password, address, mobilNo, email,customerId);
 		EntityTransaction et = em.getTransaction();
 		et.begin();
 		try {
-			em.persist(cust);
+//			em.persist(cust);
 			et.commit();
 		}catch(PersistenceException ex) {
 			throw new SomethingWentWrongException("Something went wrong");
