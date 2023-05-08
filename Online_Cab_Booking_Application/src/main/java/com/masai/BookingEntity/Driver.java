@@ -28,10 +28,6 @@ public class Driver extends User{
 		// TODO Auto-generated constructor stub
 	}
 
-
-	
-
-
 	public Driver(String userName, String password, String address, String mobileNo, String email, int driverId,
 			String licenceNo, float rating, Cab cab, Set<TripBooking> tripBooking) {
 		super(userName, password, address, mobileNo, email);

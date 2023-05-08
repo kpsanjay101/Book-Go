@@ -31,33 +31,53 @@ public class CustomerServiceImpl implements CustomerService{
 		
 	}
 
-	@Override
-	public void updateCustomer(int customerId,String address, String email, String mobileNo) {
-		EntityManager em = EMUtils.getEntityManager();
-		EntityTransaction et = em.getTransaction();
-		
-		String updateQuery = "SELECT c FROM Customer c WHERE c.customerId = :custId";
-		Query query = em.createQuery(updateQuery);
-		query.setParameter("custId", customerId);
-
-		Customer cust = (Customer)query.getSingleResult();
-		
-		try {
-			if(cust == null) {
-				throw new UserNotFoundException("Customer doesn't Exist whith this id");
-			}
-			et.begin();
-			cust.setAddress(address);
-			cust.setEmail(email);
-			cust.setMobileNo(mobileNo);
-			et.commit();
-		}catch(PersistenceException e) {
-			throw new SomethingWentWrongException("Something went wrong");
-		}finally {
-			em.close();
-		}
-		
-	}
+//	@Override
+//	public void updateCustomer(int customerId,String address, String password, String email, String mobileNo) {
+//		EntityManager em = EMUtils.getEntityManager();
+//		EntityTransaction et = em.getTransaction();
+//		
+//		String updateQuery = "SELECT c FROM Customer c WHERE c.customerId = :custId";
+//		Query query = em.createQuery(updateQuery);
+//		query.setParameter("custId", customerId);
+//
+//		Customer cust = (Customer)query.getSingleResult();
+//		
+//		try {
+//			if(cust == null) {
+//				throw new UserNotFoundException("Customer doesn't Exist whith this id");
+//			}
+//			et.begin();
+//			if(password != "") {
+//				cust.setPassword(password);
+//			}else {
+//				cust.setPassword(cust.getPassword());
+//			}
+//			
+//            if(address != "") {
+//            	cust.setAddress(address);
+//			}else {
+//				cust.setAddress(cust.getAddress());
+//			}
+//			
+//			if(email != "") {
+//				cust.setEmail(email);		
+//			}else {
+//				cust.setEmail(cust.getEmail());
+//			}
+//			
+//			if(mobileNo != "") {
+//				cust.setMobileNo(mobileNo);			
+//			}else {
+//				cust.setMobileNo(cust.getMobileNo());
+//			}
+//			et.commit();
+//		}catch(PersistenceException e) {
+//			throw new SomethingWentWrongException("Something went wrong");
+//		}finally {
+//			em.close();
+//		}
+//		
+//	}
 
 	@Override
 	public void deletetCustomer(int customerId) {
@@ -103,8 +123,22 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public Customer viewCustomerById(int customerId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = EMUtils.getEntityManager();
+		String viewQuery = "SELECT c FROM Customer c WHERE c.customerId = :id";
+		Query query = em.createQuery(viewQuery);
+		query.setParameter("id", customerId);
+		Customer cust = (Customer)query.getSingleResult();
+		try {
+			if(cust == null) {
+				throw new NoRecordFoundException("NO data found with this id");
+			}
+		}catch(PersistenceException e) {
+			throw new SomethingWentWrongException("Something went wrong");
+		}finally {
+			em.close();
+		}
+		
+		return cust;
 	}
 
 	@Override

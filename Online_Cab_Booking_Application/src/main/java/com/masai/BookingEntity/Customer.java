@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedNativeQueries;
+import jakarta.persistence.NamedNativeQuery;
+import jakarta.persistence.OneToMany;
 /**
  * @ManyToMany
     @JoinTable(
@@ -20,20 +23,24 @@ import jakarta.persistence.ManyToMany;
  *
  */
 @Entity
+//@NamedNativeQuery(
+//	    name = "",
+//	    query = "SELECT * FROM table_name WHERE column_name = :parameter",
+//	    resultClass = EntityClassName.class
+//	)
 public class Customer extends User{
 	@Column(unique = true)
 	private int customerId;
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "trip_booking_customers",
-        joinColumns = @JoinColumn(name = "tripBookingId"),
-        inverseJoinColumns = @JoinColumn(name = "customerId")
-    )
-	
-//	@ManyToMany(cascade = CascadeType.ALL)
-//	@JoinTable(name="customer_details",joinColumns = {@JoinColumn(referencedColumnName = "tripBookingId")},inverseJoinColumns = {@JoinColumn(referencedColumnName = "customerId")})
+        joinColumns = @JoinColumn(name = "customerId"),
+        inverseJoinColumns = @JoinColumn(name = "tripBookingId")
+    )	
 	private Set<TripBooking> tripBooking;
+//	@OneToMany
+//	private Cab cab;
 	
 	public Customer() {
 		super();

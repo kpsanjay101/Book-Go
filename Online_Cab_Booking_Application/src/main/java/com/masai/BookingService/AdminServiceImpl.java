@@ -1,5 +1,6 @@
 package com.masai.BookingService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.masai.BookingDAO.EMUtils;
@@ -8,6 +9,7 @@ import com.masai.BookingEntity.Driver;
 import com.masai.BookingEntity.TripBooking;
 import com.masai.Exception.NoRecordFoundException;
 import com.masai.Exception.SomethingWentWrongException;
+import com.masai.Exception.UserNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -42,16 +44,35 @@ public class AdminServiceImpl implements AdminService{
 		Admin admin = (Admin)query.getSingleResult();
 		try {
 			if(admin == null) {
-				throw new NoRecordFoundException("No Record Found whith this Id");
+				throw new UserNotFoundException("Customer doesn't Exist whith this id");
 			}
 			et.begin();
-			admin.setPassword(password);
-			admin.setAddress(address);
-			admin.setEmail(email);
-			admin.setMobileNo(mobileNo);
+			if(password != "") {
+				admin.setPassword(password);
+			}else {
+				admin.setPassword(admin.getPassword());
+			}
+			
+            if(address != "") {
+            	admin.setAddress(address);
+			}else {
+				admin.setAddress(admin.getAddress());
+			}
+			
+			if(email != "") {
+				admin.setEmail(email);		
+			}else {
+				admin.setEmail(admin.getEmail());
+			}
+			
+			if(mobileNo != "") {
+				admin.setMobileNo(mobileNo);			
+			}else {
+				admin.setMobileNo(admin.getMobileNo());
+			}
 			et.commit();
-		}catch(PersistenceException ex) {
-			throw new SomethingWentWrongException("Something Went Wrong");
+		}catch(PersistenceException e) {
+			throw new SomethingWentWrongException("Something went wrong");
 		}finally {
 			em.close();
 		}
@@ -85,11 +106,42 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public List<TripBooking> getAllTrips(int adminId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TripBooking> getAllTrips(String customerId) {
+		EntityManager em = EMUtils.getEntityManager();
+		
+		String getAllTrips = "SELECT tripBookingId FROM trip_booking_customers WHERE customerId = :id";
+		Query query = em.createNativeQuery(getAllTrips);
+		query.setParameter("id", customerId);
+		
+		List<Integer> list = query.getResultList();
+		
+		List<TripBooking> tripList = new ArrayList<>();
+		
+		try {
+			if(list.isEmpty()) {
+				throw new NoRecordFoundException("No Record Found");
+			}
+			for(Integer i : list) {
+				TripBooking tripB = getActualTrip(i);
+				tripList.add(tripB);
+			}
+			
+		}catch(PersistenceException p) {
+			throw new SomethingWentWrongException("Something went wrong");
+		}
+		
+		return tripList;
 	}
 
+	static TripBooking getActualTrip(int tripId) {
+		
+		EntityManager em = EMUtils.getEntityManager();
+		TripBooking tripB = em.find(TripBooking.class, tripId);
+		
+		
+		return tripB;
+	}
+	
 	@Override
 	public List<TripBooking> getTripsCabwise() {
 		// TODO Auto-generated method stub

@@ -96,7 +96,7 @@ public class TripBooking {
 		this.toDateTime = toDateTime;
 	}
 
-	public boolean isStattus() {
+	public boolean getStattus() {
 		return stattus;
 	}
 

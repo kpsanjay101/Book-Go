@@ -10,12 +10,16 @@ import com.masai.BookingEntity.Admin;
 import com.masai.BookingEntity.Cab;
 import com.masai.BookingEntity.Customer;
 import com.masai.BookingUI.UIMain;
+import com.masai.Exception.NoCabAvailableAtThisTime;
+import com.masai.Exception.NoRecordFoundException;
+import com.masai.Exception.SomethingWentWrongException;
 import com.masai.Exception.UserNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
 
-public class BookingServise {
+public class BookingServices {
 	static Scanner sc = new Scanner(System.in);
 	
 	public static String loginAdminPage(String user_name, String password) {
@@ -27,7 +31,7 @@ public class BookingServise {
 			String userName = admin.getUserName();
 			String passwordA = admin.getPassword();
 			if(user_name.equals(userName) && password.equals(passwordA)) {
-				return "Login Successfull";
+				return "WELCOME ADMIN !";
 			}else {
 				System.out.println("Please Inter Correct password");
 				UIMain.logingToAdmin(sc);
@@ -47,7 +51,11 @@ public class BookingServise {
 				String userName = cust.getUserName();
 				String passwordA = cust.getPassword();
 				if(user_name.equals(userName) && password.equals(passwordA)) {
-					return "Login Successfull";
+					String str = "Hello "+userName;
+					return str;
+				}else {
+					System.out.println("Please Check Your User Name And Password");
+					UIMain.loginToCustomer(sc);
 				}
 			}catch(PersistenceException ex) {
 				throw new UserNotFoundException("User doesn't Exist. Please Sign in first");
@@ -71,4 +79,6 @@ public class BookingServise {
 		}
 		
 	}
+	
+	
 }

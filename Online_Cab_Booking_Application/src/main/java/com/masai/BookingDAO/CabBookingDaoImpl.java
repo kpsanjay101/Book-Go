@@ -11,6 +11,7 @@ import com.masai.BookingEntity.Customer;
 import com.masai.BookingEntity.Driver;
 import com.masai.BookingEntity.TripBooking;
 import com.masai.Exception.NoCabAvailableAtThisTime;
+import com.masai.Exception.NoRecordFoundException;
 import com.masai.Exception.SomethingWentWrongException;
 import com.masai.Exception.UserNotFoundException;
 
@@ -38,7 +39,7 @@ public class CabBookingDaoImpl implements CabBookingDao{
 		Set<Customer> cusSet = new HashSet<>();
 		cusSet.add(customer);
 		
-		Cab cab = new Cab(1, "SUV", 3.5f, 20.25f, null);
+		Cab cab = new Cab(1, "SUV", 3.5f, 20.25f,true, null);
 		
 		Driver driver = new Driver("naman123", "Naman@123", "Patna", "7894563245", "naman@gmail.com",1, "naman12L12", 3.5f, cab, null);
 		cab.setDriver(driver);
@@ -139,14 +140,14 @@ public class CabBookingDaoImpl implements CabBookingDao{
 	}
 
 	@Override
-	public void addCustomer(String userName, String password, String address, String mobilNo, String email,int customerId) {
+	public void addCustomer(Customer customer) {
 		
 		EntityManager em = EMUtils.getEntityManager();
 //		Customer cust = new Customer(userName, password, address, mobilNo, email,customerId);
 		EntityTransaction et = em.getTransaction();
 		et.begin();
 		try {
-//			em.persist(cust);
+			em.persist(customer);
 			et.commit();
 		}catch(PersistenceException ex) {
 			throw new SomethingWentWrongException("Something went wrong");
@@ -176,6 +177,159 @@ public class CabBookingDaoImpl implements CabBookingDao{
 		
 		
 		return list;
+	}
+
+   public List<Cab> giveAvailableCab() {
+		
+		EntityManager em = EMUtils.getEntityManager();
+		List<Cab> list = null;
+		String viewQuery = "SELECT c FROM Cab c WHERE c.available = :yes";
+		Query vQuery = em.createQuery(viewQuery);
+		vQuery.setParameter("yes", true);
+		
+		try {
+			list = vQuery.getResultList();
+			if(list.isEmpty()) {
+				throw new NoCabAvailableAtThisTime("No Cab Available Please Come After Some Times");
+			}
+		}catch(PersistenceException e) {
+			throw new SomethingWentWrongException("Something went wrong");
+		}finally {
+			em.close();
+		}
+		
+		
+		return list;
+	}
+
+   public void bookAvailableCab(String user_name,String driverId,int bookingId,String fDateTime,String eDateTime,String fLocation,String tLocation,float distence) {
+	   EntityManager em = EMUtils.getEntityManager();
+	   EntityTransaction et = em.getTransaction();
+	   String getCus = "SELECT d FROM Driver d WHERE d.userName = :name";
+	   Query query1 = em.createQuery(getCus);
+	   query1.setParameter("name", driverId);
+	   Driver dr = (Driver)query1.getSingleResult();
+	   
+//	   String getCab = "SELECT c FROM Cab c WHERE c.driver_id = :drId";
+//	   Query query2 = em.createQuery(getCab);
+//	   query2.setParameter("drId", driverId);
+//	   Cab cab = (Cab)query2.getSingleResult();
+	   
+//	   Set<Driver> set = new HashSet<>();
+//	   set.add(dr);
+	   
+	   String findCustomer = "SELECT c FROM Customer c WHERE c.userName = :name";
+	   Query query2 = em.createQuery(findCustomer);
+	   query2.setParameter("name", user_name);
+	   Customer cus = (Customer)query2.getSingleResult();
+	   
+	   
+		   if(cus == null) {
+			   System.out.println("Please enter Correct user_name");
+			  return ;
+		   }
+	   
+	   String insertQuery = "INSERT INTO trip_booking_customers (customerId, tripBookingId) "
+	                  +"VALUES (:customerId, :tripBookingId)";
+	   
+	   Query query3 = em.createNativeQuery(insertQuery);
+	   
+	   
+	   
+	   TripBooking trip = new TripBooking();
+	   
+	   trip.setDriver(dr);
+	   trip.setTripBookingId(bookingId);
+	   trip.setFromDateTime(fDateTime);
+	   trip.setToDateTime(eDateTime);
+	   trip.setFromLocation(fLocation);
+	   trip.setToLocation(tLocation);
+	   trip.setDistanceInKM(distence);
+	   trip.setBill(dr.getCab().getPerKmRate()*distence);
+	   trip.setStattus(true);
+	   
+	   try {
+		   et.begin();
+		   em.persist(trip);
+		   query3.setParameter("customerId", cus.getUserName());
+		   query3.setParameter("tripBookingId", trip.getTripBookingId());
+		   query3.executeUpdate();
+		   
+		   
+		   et.commit();
+		   
+	   }catch(PersistenceException e) {
+		   throw new SomethingWentWrongException("Something went wrong");
+	   }finally {
+		   em.close();
+	   }
+	   
+   }
+	
+	@Override
+	public void updateYourAccount(String userName, String password, String address, String mobileNo, String email) {
+		EntityManager em = EMUtils.getEntityManager();
+		EntityTransaction et = em.getTransaction();
+		
+		String updateQuery = "SELECT c FROM Customer c WHERE c.userName = :user_name";
+		Query query = em.createQuery(updateQuery);
+		query.setParameter("user_name", userName);
+
+		Customer cust = (Customer)query.getSingleResult();
+		
+		try {
+			if(cust == null) {
+				throw new UserNotFoundException("Customer doesn't Exist whith this id");
+			}
+			et.begin();
+			if(password != "") {
+				cust.setPassword(password);
+			}else {
+				cust.setPassword(cust.getPassword());
+			}
+			
+            if(address != "") {
+            	cust.setAddress(address);
+			}else {
+				cust.setAddress(cust.getAddress());
+			}
+			
+			if(email != "") {
+				cust.setEmail(email);		
+			}else {
+				cust.setEmail(cust.getEmail());
+			}
+			
+			if(mobileNo != "") {
+				cust.setMobileNo(mobileNo);			
+			}else {
+				cust.setMobileNo(cust.getMobileNo());
+			}
+			et.commit();
+		}catch(PersistenceException e) {
+			throw new SomethingWentWrongException("Something went wrong");
+		}finally {
+			em.close();
+		}
+		
+	}
+
+	@Override
+	public TripBooking viewBookedCab(int tripBookingId) {
+		EntityManager em = EMUtils.getEntityManager();
+		String getQuery = "SELECT t FROM TripBooking t WHERE t.tripBookingId = :id";
+		Query query = em.createQuery(getQuery);
+		query.setParameter("id", tripBookingId);
+		TripBooking tripB = (TripBooking)query.getSingleResult();
+		
+		try {
+			if(tripB == null) {
+				throw new NoRecordFoundException("You don't have any Open Booking");
+			}
+		}catch(PersistenceException e) {
+			throw new SomethingWentWrongException("Something went wrong");
+		}
+		return tripB;
 	}
 
 }

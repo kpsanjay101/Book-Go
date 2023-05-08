@@ -1,5 +1,7 @@
 package com.masai.BookingEntity;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -12,21 +14,24 @@ public class Cab {
 	private String carType;
 	private float rating;
 	private float perKmRate;
+	private boolean available;
 	@OneToOne
 	@JoinColumn(name = "driver_id")
-	 private Driver driver;
+	private Driver driver;
 	
+//	private List<Customer> customer;
 	public Cab() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Cab(int cabId, String carType, float rating, float perKmRate, Driver driver) {
+	public Cab(int cabId, String carType, float rating, float perKmRate, boolean available, Driver driver) {
 		super();
 		this.cabId = cabId;
 		this.carType = carType;
 		this.rating = rating;
 		this.perKmRate = perKmRate;
+		this.available = available;
 		this.driver = driver;
 	}
 
@@ -62,18 +67,20 @@ public class Cab {
 		this.perKmRate = perKmRate;
 	}
 
+	public boolean getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
 	public Driver getDriver() {
 		return driver;
 	}
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
-	}
-
-	@Override
-	public String toString() {
-		return "Cab [cabId=" + cabId + ", carType=" + carType + ", rating=" + rating + ", perKmRate=" + perKmRate
-				+ ", driver=" + driver + "]";
 	}
 
 	
