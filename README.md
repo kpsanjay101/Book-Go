@@ -20,8 +20,13 @@ Admin have these services
 
 
 Customer have these functionality
+
 1.View Your Account
+
 2.View The List of Cab
+
 3.Book Cab
+
 4.See Your Booked Cab
+
 5.Update Your Account
