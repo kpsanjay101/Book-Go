@@ -2,7 +2,7 @@ ONLINE CAB BOOKING APPLICATION
 
 Basically My Project is having two type of interface
 1. Admin side
-2. 2. Customer side
+2. Customer side
 
 
 Admin have these services
