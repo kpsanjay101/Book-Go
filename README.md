@@ -1,32 +1,33 @@
-                   BOOK-n-GO
+<h1>BOOK-&-GO</h1>                   
 
-Basically My Project is having two type of interface
-1.Admin side
-2.Customer side
+<h2>Basically My Project has two types of interface</h2>
+<h3>Admin side</h3>
+<h3>Customer side</h3>
+<h4>Admin has these services></h4>
 
+1. Admin Service
 
-Admin have these services
+2. Customer Service
 
-1.Admin Service
+3. Driver Service
 
-2.Customer Service
+4. Trip Booking Service
 
-3.Driver Servicee
+5. Cab Service
 
-4.Trip Booking Service
+<h4>Customers have these functionalities</h4>
 
-5.Cab Service
+1. View Your Account
 
+2. View The List of Cab
 
+3. Book Cab
 
-Customer have these functionality
+4. See Your Booked Cab
 
-1.View Your Account
+5. Update Your Account
+<h2>Tech Stack</h2>
+<p>Java | MySQL | Hibernate</p>
 
-2.View The List of Cab
-
-3.Book Cab
-
-4.See Your Booked Cab
-
-5.Update Your Account
+<h2>Dependencies</h2>
+<p> Hibernate | SQL </p>
